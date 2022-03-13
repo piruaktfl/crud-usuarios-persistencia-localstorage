@@ -31,13 +31,16 @@ export default new Vuex.Store({
     editUser (state, payload) {
       state.users[state.indexUser] = payload
       localStorage.setItem('users', JSON.stringify(state.users))
-      window.location.reload()
+      // window.location.reload()
     },
     openCloseModal (state, payload) {
       state.modal = payload
     },
     openCloseModalEdit (state, payload) {
       state.modalEdit = payload
+      if (!state.modalEdit) {
+        window.location.reload()
+      }
     },
     openCloseModalDetail (state, payload) {
       state.modalDetail = payload

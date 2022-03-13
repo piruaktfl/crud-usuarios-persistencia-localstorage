@@ -7,21 +7,23 @@
       </div>
       <div class="form">
         <label for="">nome</label>
-        <input :class="{error: isEmpty(form.nome)}" v-model="form.nome" type="text" placeholder="Seu nome" />
+        <input :class="{error: $cNome}" v-model="form.nome" type="text" placeholder="Seu nome" />
         <label for="">email</label>
-        <input :class="{error: isEmpty(form.email)}" v-model="form.email" type="email" placeholder="Seu email" />
+        <input :class="{error: $cEmail}" v-model="form.email" type="email" placeholder="Seu email" />
         <label for="">senha</label>
-        <input :class="{error: isEmpty(form.senha)}" v-model="form.senha" type="password" placeholder="Sua senha" />
+        <input :class="{error: $cSenha}" v-model="form.senha" type="password" placeholder="Sua senha" />
         <label for="">repita sua senha</label>
         <input
-          :class="{error: isEmpty(senhaRepete)} || (form.senha !== senhaRepete)"
+          :class="{error: $cRepeteSenha}"
           v-model="senhaRepete"
           type="password"
           placeholder="Repita sua senha"
         />
       </div>
-      <div><button @click.prevent="salvarUsuario()">Criar</button></div>
-      <!-- <div>{{msg}}</div> -->
+      <div><button @click.prevent="validarFormulario">Criar</button></div>
+      <div v-show="mMsg" class="msg">{{mMsg}}</div>
+      <div v-if="mSucesso" class="sucesso">{{mSucesso}}</div>
+
     </div>
   </div>
 </template>
@@ -38,8 +40,7 @@ export default {
         email: '',
         senha: ''
       },
-      senhaRepete: '',
-      validForm: false
+      senhaRepete: ''
     }
   },
   methods: {
@@ -52,8 +53,23 @@ export default {
       this.form.senha = ''
       this.senhaRepete = ''
     },
+    validarFormulario () {
+      this.mFirstLoad = true
+      if (
+        !this.$cNome &&
+        !this.$cSenha &&
+        !this.$cEmail &&
+        !this.$cRepeteSenha
+      ) {
+        this.mMsg = ''
+        this.salvarUsuario()
+        this.mSucesso = 'Usuário salvo'
+        this.mFirstLoad = false
+      } else {
+        this.mMsg = 'todos campos são obrigatórios'
+      }
+    },
     async salvarUsuario () {
-      // const NAMESPACE = '65f9af5d-f23f-4065-ac85-da725569fdcd'
       this.form.id = uuid.v4()
       await this.addUser(this.form)
       await this.clearForm()

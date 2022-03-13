@@ -7,25 +7,18 @@
       </div>
       <div class="form">
         <label for="">nome</label>
-        <input :class="{error: isEmpty(form.nome)}" v-model="form.nome" type="text" placeholder="Seu nome" />
+        <input :class="{error: $cNome}" v-model="form.nome" type="text" placeholder="Seu nome" />
         <label for="">email</label>
-        <input :class="{error: isEmpty(form.email)}" v-model="form.email" type="email" placeholder="Seu email" />
-        <!-- <input :class="{error: isEmpty(form.senha)}" v-model="form.senha" type="password" placeholder="Sua senha" /> -->
-        <!-- <input
-          :class="{error: isEmpty(senhaRepete)} || (form.senha !== senhaRepete)"
-          v-model="senhaRepete"
-          type="password"
-          placeholder="Repita sua senha"
-        /> -->
+        <input :class="{error: $cEmail}" v-model="form.email" type="email" placeholder="Seu email" />
       </div>
-      <div><button @click.prevent="salvarUsuario()">Salvar</button></div>
-      <!-- <div>{{msg}}</div> -->
+      <div><button @click.prevent="validarFormulario()">Salvar</button></div>
+      <div v-show="mMsg" class="msg">{{mMsg}}</div>
+      <div v-if="mSucesso" class="sucesso">{{mSucesso}}</div>
     </div>
   </div>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-// import { uuid } from 'vue-uuid'
 
 export default {
   name: 'ModalUserEdit',
@@ -33,15 +26,15 @@ export default {
     return {
       form: {
         nome: '',
-        email: '',
-        senha: ''
+        email: ''
       },
       senhaRepete: '',
       validForm: false
     }
   },
   mounted () {
-    this.form = this.users[this.indexUser]
+    const novoDados = Object.assign({}, this.users[this.indexUser])
+    this.form = novoDados
   },
   computed: {
     ...mapGetters([
@@ -50,18 +43,22 @@ export default {
     ])
   },
   methods: {
-    isEmpty (value) {
-      return false
-    },
-    async clearForm () {
-      this.form.nome = ''
-      this.form.email = ''
-      this.form.senha = ''
-      this.senhaRepete = ''
+    validarFormulario () {
+      this.mFirstLoad = true
+      if (
+        !this.$cNome &&
+        !this.$cEmail
+      ) {
+        this.mMsg = ''
+        this.salvarUsuario()
+        this.mSucesso = 'Usuário salvo'
+        this.mFirstLoad = false
+      } else {
+        this.mMsg = 'todos campos são obrigatórios'
+      }
     },
     async salvarUsuario () {
       await this.editUser(this.form)
-      await this.clearForm()
     },
     ...mapActions([
       'editUser'

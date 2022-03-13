@@ -53,4 +53,18 @@ button:hover {
   background-color: rgba($color: #4150d3, $alpha: 1);
 }
 
+.msg {
+  padding: 5px;
+  border-radius: 4px;
+  background-color: rgba($color: #dd4c4c, $alpha: .7);
+  margin: 10px 0;
+}
+
+.sucesso {
+  padding: 5px;
+  border-radius: 4px;
+  margin: 10px 0;
+  background-color: rgba($color: #35d335, $alpha: .7);
+}
+
 </style>
